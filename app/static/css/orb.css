@@ -1,0 +1,286 @@
+/* ==========================================================================
+   AI CORE / ORB — CINEMATIC VISUAL IDENTITY
+   ========================================================================== */
+
+:root {
+  --audio-amp: 0; /* Dynamically updated by Web Audio API (0.0 - 1.0) */
+  --orb-size: 160px;
+}
+
+.orb-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 20px 8px;
+  position: relative;
+  z-index: 10;
+  transition: all var(--transition-smooth);
+}
+
+.orb-container {
+  width: var(--orb-size);
+  height: var(--orb-size);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  outline: none;
+}
+
+.orb-container:focus-visible {
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px var(--accent-cyan);
+}
+
+/* Outer atmospheric nebula */
+.orb-halo {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 242, 254, 0.25) 0%, rgba(127, 0, 255, 0.12) 50%, transparent 72%);
+  filter: blur(22px);
+  transform: scale(calc(1.05 + var(--audio-amp) * 0.45));
+  transition: transform 0.08s ease-out, opacity var(--transition-normal);
+  animation: orb-ambient-breathe 4.5s infinite ease-in-out;
+  pointer-events: none;
+}
+
+/* Concentric orbital containment rings */
+.orb-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 242, 254, 0.28);
+  box-shadow: 0 0 16px rgba(0, 242, 254, 0.18);
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
+  pointer-events: none;
+}
+
+.orb-ring-1 {
+  width: calc(var(--orb-size) * 0.82);
+  height: calc(var(--orb-size) * 0.82);
+  border-top-color: var(--accent-cyan);
+  border-bottom-color: var(--accent-purple);
+  animation: ring-spin-clockwise 14s linear infinite;
+  transform: scale(calc(1 + var(--audio-amp) * 0.2));
+}
+
+.orb-ring-2 {
+  width: calc(var(--orb-size) * 0.65);
+  height: calc(var(--orb-size) * 0.65);
+  border-left-color: var(--accent-blue);
+  border-right-color: var(--accent-violet);
+  animation: ring-spin-counter 9s linear infinite;
+  transform: scale(calc(1 + var(--audio-amp) * 0.15));
+}
+
+/* Center Singularity Core */
+.orb-core {
+  width: calc(var(--orb-size) * 0.48);
+  height: calc(var(--orb-size) * 0.48);
+  border-radius: 50%;
+  position: relative;
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, var(--accent-cyan) 32%, var(--accent-violet) 75%, #050b1a 100%);
+  box-shadow: 
+    0 0 calc(20px + var(--audio-amp) * 35px) rgba(0, 242, 254, 0.65),
+    0 0 calc(45px + var(--audio-amp) * 45px) rgba(127, 0, 255, 0.4),
+    inset 0 0 14px rgba(255, 255, 255, 0.8);
+  transform: scale(calc(1 + var(--audio-amp) * 0.25));
+  transition: transform 0.08s ease-out, box-shadow 0.08s ease-out;
+  pointer-events: none;
+}
+
+/* State Badge */
+.state-indicator-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  background: var(--bg-glass-card);
+  border: 1px solid var(--border-glass);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all var(--transition-fast);
+}
+
+.state-dot-live {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--accent-cyan);
+  box-shadow: 0 0 8px var(--accent-cyan);
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+/* ==========================================================================
+   STATE-SPECIFIC THEMATIC SHIFTS
+   ========================================================================== */
+
+/* 1. LISTENING STATE */
+.state-listening .orb-halo {
+  background: radial-gradient(circle, rgba(0, 242, 254, 0.55) 0%, rgba(79, 172, 254, 0.28) 55%, transparent 75%);
+  filter: blur(18px);
+}
+.state-listening .orb-ring-1 {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 25px rgba(0, 242, 254, 0.5);
+  animation-duration: 5s;
+}
+.state-listening .state-dot-live {
+  background-color: var(--accent-cyan);
+  box-shadow: 0 0 12px var(--accent-cyan);
+  animation: pulse-dot 1s infinite alternate;
+}
+
+/* 2. PROCESSING STATE */
+.state-processing .orb-halo {
+  background: radial-gradient(circle, rgba(127, 0, 255, 0.45) 0%, rgba(0, 242, 254, 0.3) 55%, transparent 75%);
+}
+.state-processing .orb-ring-1 {
+  animation-duration: 2.2s;
+  border-top-color: var(--accent-cyan);
+  border-bottom-color: var(--accent-purple);
+}
+.state-processing .orb-ring-2 {
+  animation-duration: 1.8s;
+}
+.state-processing .state-dot-live {
+  background-color: var(--accent-purple);
+  box-shadow: 0 0 10px var(--accent-purple);
+}
+
+/* 3. THINKING STATE */
+.state-thinking .orb-halo {
+  background: radial-gradient(circle, rgba(127, 0, 255, 0.5) 0%, rgba(225, 0, 255, 0.35) 55%, transparent 75%);
+  animation: thinking-orbit-glow 2s infinite alternate ease-in-out;
+}
+.state-thinking .orb-ring-1 {
+  border-top-color: var(--accent-purple);
+  border-bottom-color: var(--accent-cyan);
+  animation-duration: 3s;
+}
+.state-thinking .orb-core {
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, var(--accent-violet) 40%, var(--accent-purple) 80%, #050b1a 100%);
+  box-shadow: 0 0 45px rgba(127, 0, 255, 0.85);
+}
+.state-thinking .state-dot-live {
+  background-color: var(--accent-violet);
+  box-shadow: 0 0 10px var(--accent-violet);
+}
+
+/* 4. TOOL_USE STATE */
+.state-tool_use .orb-halo {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.5) 0%, rgba(16, 185, 129, 0.3) 60%, transparent 75%);
+}
+.state-tool_use .orb-ring-1 {
+  border-color: var(--accent-amber);
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.5);
+  animation-duration: 2.5s;
+}
+.state-tool_use .orb-ring-2 {
+  border-color: var(--accent-emerald);
+}
+.state-tool_use .orb-core {
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, var(--accent-amber) 40%, var(--accent-emerald) 80%, #050b1a 100%);
+  box-shadow: 0 0 40px rgba(245, 158, 11, 0.85);
+}
+.state-tool_use .state-dot-live {
+  background-color: var(--accent-amber);
+  box-shadow: 0 0 10px var(--accent-amber);
+}
+
+/* 5. SPEAKING STATE */
+.state-speaking .orb-halo {
+  background: radial-gradient(circle, rgba(0, 242, 254, 0.6) 0%, rgba(127, 0, 255, 0.4) 55%, transparent 78%);
+  filter: blur(20px);
+}
+.state-speaking .orb-ring-1 {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 30px rgba(0, 242, 254, 0.6);
+  animation-duration: 4s;
+}
+.state-speaking .orb-ring-2 {
+  border-color: var(--accent-violet);
+  animation-duration: 3s;
+}
+.state-speaking .state-dot-live {
+  background-color: var(--accent-cyan);
+  box-shadow: 0 0 12px var(--accent-cyan);
+  animation: pulse-dot 0.8s infinite alternate;
+}
+
+/* 6. PAUSED STATE */
+.state-paused .orb-halo {
+  opacity: 0.35;
+  animation: none;
+}
+.state-paused .orb-ring-1, .state-paused .orb-ring-2 {
+  animation-play-state: paused;
+  border-color: var(--text-muted);
+}
+.state-paused .state-dot-live {
+  background-color: var(--text-muted);
+  box-shadow: none;
+}
+
+/* 7. ERROR STATE */
+.state-error .orb-halo {
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.5) 0%, rgba(180, 0, 30, 0.3) 60%, transparent 75%);
+}
+.state-error .orb-ring-1, .state-error .orb-ring-2 {
+  border-color: var(--accent-rose);
+  box-shadow: 0 0 25px rgba(244, 63, 94, 0.5);
+}
+.state-error .orb-core {
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, var(--accent-rose) 40%, #500010 80%, #050b1a 100%);
+  box-shadow: 0 0 40px rgba(244, 63, 94, 0.85);
+}
+.state-error .state-dot-live {
+  background-color: var(--accent-rose);
+  box-shadow: 0 0 10px var(--accent-rose);
+}
+
+/* KEYFRAMES */
+@keyframes orb-ambient-breathe {
+  0%, 100% { transform: scale(1.04); opacity: 0.72; }
+  50% { transform: scale(1.15); opacity: 0.95; }
+}
+
+@keyframes ring-spin-clockwise {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ring-spin-counter {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes thinking-orbit-glow {
+  0% { filter: blur(18px) hue-rotate(0deg); transform: scale(1.08); }
+  100% { filter: blur(26px) hue-rotate(60deg); transform: scale(1.2); }
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  100% { transform: scale(1.25); opacity: 1; }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .orb-halo, .orb-ring-1, .orb-ring-2, .state-dot-live {
+    animation: none !important;
+    transition: none !important;
+  }
+}

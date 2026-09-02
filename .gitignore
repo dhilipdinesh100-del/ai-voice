@@ -1,0 +1,23 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Environment Variables & Secrets
+.env
+
+# Application local storage & databases
+data/
+*.db
+*.sqlite3
+
+# OS metadata
+.DS_Store
+Thumbs.db

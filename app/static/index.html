@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NOVA — Premium Voice AI Assistant</title>
+  <meta name="description" content="Commercial-grade, voice-first conversational AI assistant with memory, tools, RAG knowledge search, and real-time audio pipeline.">
+  
+  <!-- Modern Typography & Icons -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='20' font-size='20'>🎙️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/static/css/main.css">
+  <link rel="stylesheet" href="/static/css/orb.css">
+  <link rel="stylesheet" href="/static/css/components.css">
+</head>
+<body class="state-idle">
+  <div class="app-container">
+    
+    <!-- 1. HEADER -->
+    <header class="app-header" role="banner">
+      <div class="brand-section">
+        <div class="brand-logo" id="brandLogo" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5zm4 4h-2v-2h2v2zm0-4h-2V7h2v5z"/>
+          </svg>
+        </div>
+        <h1 class="brand-title">NOVA</h1>
+        <div class="status-pill" id="systemStatusPill" role="status" aria-live="polite">
+          <span class="status-dot" id="systemStatusDot"></span>
+          <span id="systemStatusLabel">System Ready</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-pill" id="btnOpenCommandPalette" aria-label="Open Command Palette (Ctrl+K)" title="Command Palette (Ctrl+K)">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <span>Cmd <span class="kbd">Ctrl+K</span></span>
+        </button>
+        <button class="btn-icon" id="btnNewChatHeader" aria-label="Start New Conversation (Ctrl+N)" title="New Conversation (Ctrl+N)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </button>
+        <button class="btn-icon" id="btnOpenKnowledge" aria-label="Open Knowledge Base and Documents" title="Knowledge Base / Documents">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
+        </button>
+        <button class="btn-icon" id="btnToggleSidebar" aria-label="Toggle Conversation History Drawer" title="Conversation History">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14H6v-2h4v2zm6-4H6v-2h10v2zm0-4H6V7h10v2z"/></svg>
+        </button>
+        <button class="btn-icon" id="btnOpenSettings" aria-label="Open Settings" title="Settings">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- 2. MAIN VIEWPORT -->
+    <main class="main-stage">
+      <div class="content-viewport">
+        
+        <!-- Animated AI Core / Orb Section -->
+        <section class="orb-stage" aria-label="AI Voice Core">
+          <div class="orb-container" id="aiOrbCore" role="button" tabindex="0" aria-label="AI Core - Click to speak or interrupt speech" title="Click to speak or stop speech">
+            <div class="orb-halo" aria-hidden="true"></div>
+            <div class="orb-ring orb-ring-1" aria-hidden="true"></div>
+            <div class="orb-ring orb-ring-2" aria-hidden="true"></div>
+            <div class="orb-core" aria-hidden="true"></div>
+          </div>
+          <div class="state-indicator-badge" role="status" aria-live="polite">
+            <span class="state-dot-live" aria-hidden="true"></span>
+            <span id="stateBadgeText">IDLE</span>
+          </div>
+
+          <!-- Real-Time Waveform Visualizer -->
+          <div class="waveform-container" aria-hidden="true">
+            <canvas id="waveformCanvas"></canvas>
+          </div>
+
+          <!-- Voice Interaction Bar -->
+          <div class="voice-bar">
+            <button class="hands-free-toggle" id="btnToggleHandsFree" aria-label="Toggle Hands-Free Continuous Mode" title="Hands-Free continuous conversational mode">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+              <span>Hands-Free</span>
+            </button>
+
+            <button class="mic-button" id="btnMainMic" aria-label="Microphone - Click to record speech" title="Click to speak (or press Space)">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
+              </svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- Chat History Viewport -->
+        <section class="chat-viewport" id="chatViewport" aria-label="Conversation Messages" role="log" aria-live="polite">
+          <div class="empty-chat-state" id="emptyChatState">
+            <h3>How can I assist your objectives today?</h3>
+            <p>Speak via microphone or type your question below. I compute calculations, retrieve real-time facts, retain memories, and consult your documents.</p>
+            <div class="suggestion-chips" role="group" aria-label="Sample Commands">
+              <button class="suggestion-chip">What time is it in Tokyo?</button>
+              <button class="suggestion-chip">Calculate (15 * 8) + sqrt(144)</button>
+              <button class="suggestion-chip">How is the weather in San Francisco?</button>
+              <button class="suggestion-chip">Take a note: Architecture review on Friday</button>
+              <button class="suggestion-chip">Remind me to deploy at 5 PM</button>
+              <button class="suggestion-chip">Explain RAG in simple terms</button>
+              <button class="suggestion-chip">Check system status</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Floating Chat Input Dock -->
+        <div class="input-dock" role="form" aria-label="Message Input">
+          <div class="input-shell">
+            <input type="text" class="input-field" id="chatTextInput" placeholder="Ask NOVA anything by voice or text..." autocomplete="off" aria-label="Message text">
+            <div class="input-actions">
+              <button class="btn-send" id="btnSendChat" aria-label="Send Message" title="Send message">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="shortcuts-hint" aria-hidden="true">
+            <span><span class="kbd">Enter</span> Send</span>
+            <span><span class="kbd">Ctrl+K</span> Commands</span>
+            <span><span class="kbd">Esc</span> Stop audio</span>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- 3. CONVERSATION SIDEBAR DRAWER -->
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+    <aside class="sidebar-drawer" id="sidebarDrawer" role="dialog" aria-label="Conversation History" aria-modal="true">
+      <div class="sidebar-header">
+        <h2 style="font-size: 1rem; font-weight: 600;">Conversations</h2>
+        <button class="btn-icon" id="btnCloseSidebar" aria-label="Close Conversation History" style="width: 30px; height: 30px;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+      <div class="sidebar-search">
+        <input type="text" id="sidebarSearchInput" placeholder="Search conversations..." aria-label="Search conversations">
+      </div>
+      <div style="padding: 12px 18px 0;">
+        <button class="btn-pill" id="btnNewChatSidebar" style="width: 100%; justify-content: center;">
+          <span>+ New Conversation</span>
+        </button>
+      </div>
+      <div class="sidebar-list" id="sidebarList" role="list"></div>
+    </aside>
+
+    <!-- 4. KNOWLEDGE BASE MODAL -->
+    <div class="modal-overlay" id="knowledgeModal" role="dialog" aria-label="Knowledge Base Modal" aria-modal="true">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 style="font-size: 1.1rem; font-weight: 600;">Knowledge Base (RAG)</h2>
+          <button class="btn-icon" id="btnCloseKnowledge" aria-label="Close Knowledge Base Modal" style="width: 32px; height: 32px;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="dropzone" id="knowledgeDropzone" role="button" tabindex="0" aria-label="Upload document dropzone">
+            <svg viewBox="0 0 24 24" width="36" height="36" fill="var(--accent-cyan)" style="margin-bottom: 8px;" aria-hidden="true"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+            <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Click or drag documents to upload</p>
+            <p style="font-size: 0.8rem; color: var(--text-muted);">Supported: PDF, TXT, Markdown (Max 15MB)</p>
+            <input type="file" id="knowledgeFileInput" accept=".pdf,.txt,.md,.markdown" style="display: none;" aria-label="File Upload">
+          </div>
+
+          <h3 style="font-size: 0.9rem; margin: 20px 0 10px; color: var(--text-secondary);">Uploaded Documents</h3>
+          <div id="knowledgeDocList" style="max-height: 180px; overflow-y: auto;"></div>
+
+          <h3 style="font-size: 0.9rem; margin: 20px 0 10px; color: var(--text-secondary);">Test Knowledge Retrieval</h3>
+          <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+            <input type="text" id="knowledgeQueryInput" class="form-control" placeholder="Ask a question against your documents..." aria-label="Knowledge test query">
+            <button class="btn-pill btn-primary" id="btnKnowledgeQuery">Search</button>
+          </div>
+          <div id="knowledgeQueryResults" role="region" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. SETTINGS MODAL -->
+    <div class="modal-overlay" id="settingsModal" role="dialog" aria-label="Settings Modal" aria-modal="true">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 style="font-size: 1.1rem; font-weight: 600;">Assistant Settings</h2>
+          <button class="btn-icon" id="btnCloseSettings" aria-label="Close Settings Modal" style="width: 32px; height: 32px;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="settings-tabs" role="tablist">
+            <button class="settings-tab-btn active" data-tab="general" role="tab" aria-selected="true">General</button>
+            <button class="settings-tab-btn" data-tab="ai" role="tab" aria-selected="false">AI & Personality</button>
+            <button class="settings-tab-btn" data-tab="voice" role="tab" aria-selected="false">Voice & Speech</button>
+            <button class="settings-tab-btn" data-tab="memory" role="tab" aria-selected="false">Memory</button>
+            <button class="settings-tab-btn" data-tab="about" role="tab" aria-selected="false">About</button>
+          </div>
+
+          <!-- General Tab -->
+          <div class="settings-pane" id="tab-general">
+            <div class="form-group">
+              <label for="settingTheme">Theme</label>
+              <select id="settingTheme" class="form-control">
+                <option value="dark">Dark Theme (Default)</option>
+                <option value="light">Light Theme</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="settingLanguage">Interface Language</label>
+              <select id="settingLanguage" class="form-control">
+                <option value="en">English (US/UK)</option>
+                <option value="hi">Hindi (हिंदी)</option>
+                <option value="ta">Tamil (தமிழ்)</option>
+                <option value="es">Spanish (Español)</option>
+                <option value="fr">French (Français)</option>
+                <option value="de">German (Deutsch)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- AI Tab -->
+          <div class="settings-pane" id="tab-ai" style="display: none;">
+            <div class="form-group">
+              <label for="settingPersonality">Personality Preset</label>
+              <select id="settingPersonality" class="form-control">
+                <option value="Futuristic">Futuristic (Poised, sharp, concise)</option>
+                <option value="Professional">Professional (Structured, formal)</option>
+                <option value="Friendly">Friendly (Warm, approachable)</option>
+                <option value="Concise">Concise (1-3 sentences, direct)</option>
+                <option value="Tutor">Tutor (Educational, step-by-step)</option>
+                <option value="Coding Assistant">Coding Assistant (Technical, code-oriented)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="settingCustomPrompt">Custom System Instructions (Optional)</label>
+              <textarea id="settingCustomPrompt" class="form-control" rows="3" placeholder="Add custom instructions or behavioral guidelines for NOVA..."></textarea>
+            </div>
+          </div>
+
+          <!-- Voice Tab -->
+          <div class="settings-pane" id="tab-voice" style="display: none;">
+            <div class="form-group">
+              <label for="settingVoiceEngine">Simulation Voice Mode</label>
+              <select id="settingVoiceEngine" class="form-control">
+                <option value="speech">Browser Spoken Voice (Web Speech API)</option>
+                <option value="chime">Futuristic Chime (Synthesized Audio Chords)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="settingVoice">Voice Character Preset</label>
+              <select id="settingVoice" class="form-control">
+                <option value="alloy">Alloy (Balanced, clear)</option>
+                <option value="echo">Echo (Warm, dynamic)</option>
+                <option value="fable">Fable (Expressive tone)</option>
+                <option value="onyx">Onyx (Deep, resonant)</option>
+                <option value="nova">Nova (Bright, energetic)</option>
+                <option value="shimmer">Shimmer (Calm, melodic)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="settingVoiceSpeed">Speaking Speed: <span id="speedValueDisplay">1.0x</span></label>
+              <input type="range" id="settingVoiceSpeed" min="0.5" max="2.0" step="0.1" value="1.0" class="form-control" oninput="document.getElementById('speedValueDisplay').textContent = this.value + 'x'">
+            </div>
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+              <input type="checkbox" id="settingAutoPlay" checked>
+              <label for="settingAutoPlay" style="margin: 0; cursor: pointer;">Automatically play synthesized voice</label>
+            </div>
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+              <input type="checkbox" id="settingHandsFree">
+              <label for="settingHandsFree" style="margin: 0; cursor: pointer;">Enable Hands-Free auto-turn conversation</label>
+            </div>
+          </div>
+
+          <!-- Memory Tab -->
+          <div class="settings-pane" id="tab-memory" style="display: none;">
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+              <input type="checkbox" id="settingMemoryEnabled" checked>
+              <label for="settingMemoryEnabled" style="margin: 0; cursor: pointer;">Enable Long-Term User Memory</label>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+              <h3 style="font-size: 0.88rem; color: var(--text-secondary);">Stored Memories</h3>
+              <button class="btn-pill" id="btnClearAllMemories" style="font-size: 0.75rem; color: var(--accent-rose);">Clear All</button>
+            </div>
+            <div id="settingsMemoryList" style="max-height: 200px; overflow-y: auto;"></div>
+          </div>
+
+          <!-- About Tab -->
+          <div class="settings-pane" id="tab-about" style="display: none;">
+            <p style="font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 14px;">
+              <strong>NOVA AI Voice Assistant</strong> is an advanced, production-grade conversational AI platform built with FastAPI, SQLite, modern Web Audio APIs, and customizable neural pipelines.
+            </p>
+            <div style="background: rgba(0, 242, 254, 0.06); border: 1px solid rgba(0, 242, 254, 0.2); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 14px; font-size: 0.83rem; line-height: 1.5; color: var(--text-secondary);">
+              <strong>Simulation Mode:</strong> Currently active. All computations, world clocks, notes, reminders, weather reporting, and RAG document search run completely offline on your local machine with zero external API dependencies.
+            </div>
+            <ul style="font-size: 0.85rem; color: var(--text-muted); list-style: none; display: flex; flex-direction: column; gap: 6px;">
+              <li><strong>Version:</strong> 2.0.0 (Simulation-Ready Build)</li>
+              <li><strong>Architecture:</strong> Python FastAPI + SQLite WAL + Web Audio API</li>
+              <li><strong>Providers:</strong> OpenAI Whisper, GPT-4o-Mini, TTS-1 + Resilient Offline Simulator</li>
+              <li><strong>Tools:</strong> Calculator, Time, Weather, Web Search, Notes, Reminders, Knowledge Base (RAG)</li>
+            </ul>
+          </div>
+
+          <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 10px;">
+            <button class="btn-pill btn-primary" id="btnSaveSettings">Save Settings</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. COMMAND PALETTE MODAL -->
+    <div class="modal-overlay" id="commandPaletteModal" role="dialog" aria-label="Command Palette" aria-modal="true">
+      <div class="cmd-palette-card">
+        <div class="cmd-input-wrap">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="var(--accent-cyan)" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input type="text" class="cmd-input" id="commandPaletteInput" placeholder="Type a command or action..." aria-label="Search commands">
+        </div>
+        <div class="cmd-list" id="commandPaletteList" role="menu"></div>
+      </div>
+    </div>
+
+    <!-- 7. TOAST NOTIFICATIONS SHELF -->
+    <div class="toast-shelf" id="toastShelf" role="status" aria-live="polite"></div>
+
+  </div>
+
+  <!-- Client-Side Scripts -->
+  <script src="/static/js/state.js"></script>
+  <script src="/static/js/audio.js"></script>
+  <script src="/static/js/stream.js"></script>
+  <script src="/static/js/sidebar.js"></script>
+  <script src="/static/js/knowledge_ui.js"></script>
+  <script src="/static/js/settings_ui.js"></script>
+  <script src="/static/js/command_palette.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
