@@ -8,6 +8,44 @@ def test_health_check(client):
     assert data["assistant"] == "NOVA"
     assert "mode" in data
 
+def test_root_serves_frontend_html(client):
+    """Verify / serves the live NOVA application, not README or raw markdown."""
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "text/html" in response.headers.get("content-type", "")
+    html = response.text
+    assert "<!doctype html>" in html.lower()
+    assert "NOVA — Premium Voice AI Assistant" in html
+    assert "id=\"aiOrbCore\"" in html
+    assert "id=\"chatTextInput\"" in html
+    assert "/static/css/main.css" in html
+    assert "/static/js/app.js" in html
+    # Verify it does NOT return markdown or README
+    assert not html.strip().startswith("#")
+    assert "```bash" not in html
+
+    # Also verify /index.html
+    res_index = client.get("/index.html")
+    assert res_index.status_code == 200
+    assert "id=\"aiOrbCore\"" in res_index.text
+
+def test_static_assets_and_docs(client):
+    """Verify static CSS, JS, and FastAPI interactive docs are served correctly."""
+    # CSS
+    css_res = client.get("/static/css/main.css")
+    assert css_res.status_code == 200
+    assert "text/css" in css_res.headers.get("content-type", "")
+
+    # JS
+    js_res = client.get("/static/js/app.js")
+    assert js_res.status_code == 200
+    assert "javascript" in js_res.headers.get("content-type", "")
+
+    # Docs
+    docs_res = client.get("/docs")
+    assert docs_res.status_code == 200
+    assert "text/html" in docs_res.headers.get("content-type", "")
+
 def test_chat_endpoint(client):
     payload = {
         "text": "Hello NOVA, how are you?",

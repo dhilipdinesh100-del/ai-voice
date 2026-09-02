@@ -16,6 +16,15 @@ NOVA is a voice-first AI assistant with a futuristic web interface, a FastAPI ba
 - Language and theme settings with dark, light, and system modes.
 - Command palette with `Ctrl+K`, new conversation with `Ctrl+N`, chat focus with `Ctrl+/`, and speech stop with `Esc`.
 
+## Live Application
+
+- **GitHub Repository URL**: [https://github.com/dhilipdinesh100-del/ai-voice](https://github.com/dhilipdinesh100-del/ai-voice) shows the complete project source code, tests, and configuration.
+- **Deployed Application URL**: Visiting the deployed URL (e.g. on Render) directly opens the interactive NOVA web application at `/`, not a static README or repository page.
+- **FastAPI Backend**: The backend is built with **FastAPI**, serving the responsive UI from `app/static/index.html` at `/`, static assets from `/static/...`, health checks at `/health`, interactive OpenAPI docs at `/docs`, and backend intelligence at `/api/...`.
+- **Simulation Mode (No Key Required)**: Fully functional without an API key. Local AST arithmetic, worldwide time zones, weather reports, note organization, reminder management, document RAG queries, browser Speech Recognition, and local Web Speech synthesis work out of the box.
+- **OpenAI Functionality (User Key Required)**: Cloud-based GPT-4o reasoning, OpenAI Whisper STT, and OpenAI voice synthesis require the user's own `OPENAI_API_KEY`.
+- **Security Rule**: **Do NOT put an API key in GitHub**. The `.env` file is excluded in `.gitignore`. For production deployments, supply `OPENAI_API_KEY` through the host's secret environment variables dashboard.
+
 ## Operating Modes
 
 ### Simulation Mode

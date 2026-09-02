@@ -91,6 +91,7 @@ def test_full_browser_experience():
         # Switch back to Dark Theme
         page.click("#btnOpenSettings")
         page.wait_for_selector("#settingsModal.open", timeout=3000)
+        page.wait_for_timeout(300)
         page.select_option("#settingTheme", "dark")
         page.click("#btnSaveSettings")
         page.wait_for_selector("#settingsModal:not(.open)", timeout=3000)

@@ -59,10 +59,11 @@ async def global_exception_handler(request: Request, exc: Exception):
 # Static files
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
-# Core routes
-@app.get("/")
+# Core routes: serve NOVA single-page web application at root
+@app.get("/", include_in_schema=False)
+@app.get("/index.html", include_in_schema=False)
 def home():
-    return FileResponse(BASE_DIR / "static" / "index.html")
+    return FileResponse(BASE_DIR / "static" / "index.html", media_type="text/html")
 
 @app.get("/favicon.ico", include_in_schema=False)
 def favicon():
