@@ -62,6 +62,29 @@ python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 
 Open <http://127.0.0.1:8000> in your browser. If port 8000 is unavailable, choose another local port such as 8001.
 
+## Production Deployment
+
+GitHub Pages cannot run NOVA. GitHub is the source repository only; it does not provide a Python runtime for the FastAPI backend. Deploy the repository to a Python/FastAPI hosting service, then open that service's URL in the browser:
+
+```text
+GitHub source repository -> Python/FastAPI host -> browser -> NOVA frontend and /api routes
+```
+
+### Recommended Host: Render
+
+Render is the recommended starting point because it supports Python web services, reads the included `render.yaml` blueprint, and provides the `PORT` environment variable required by the production command. The included `Procfile` is also compatible with hosts that use Procfile-based deployment.
+
+1. Push this repository to GitHub, keeping `.env` local and uncommitted.
+2. In Render, choose **New > Blueprint** and select the GitHub repository.
+3. Render detects `render.yaml`, installs `requirements.txt`, and runs `uvicorn app.main:app --host 0.0.0.0 --port $PORT`.
+4. In the Render service environment settings, add your own `OPENAI_API_KEY` only if live OpenAI features are needed. Leave it unset for Simulation Mode.
+5. Deploy, then open the assigned Render URL. The NOVA interface is served at `/`, assets at `/static/...`, health at `/health`, and backend APIs at `/api/...`.
+6. Verify the deployment at `https://YOUR-RENDER-URL.onrender.com/health` before using the UI.
+
+The production service must bind to `0.0.0.0` and use the host-provided `$PORT`; do not use the local development command with `--reload` in production. The included [render.yaml](render.yaml) and [Procfile](Procfile) keep the deployment command in source control.
+
+Render's free service may sleep when idle. The local SQLite database and uploaded audio/documents use the service filesystem, so they are appropriate for development or a single-instance deployment and may be lost during redeploys or instance replacement. Use a managed database and persistent object storage before treating the service as production data storage.
+
 ## Testing
 
 Run the unit, integration, and browser tests with:
