@@ -150,7 +150,11 @@ def tool_reminders(action: str, text: Optional[str] = None, due_at: Optional[str
         rems = ReminderRepository.list_all()
         if not rems:
             return "No active reminders."
-        items = [f"- {'[Done]' if r['is_completed'] else '[Pending]'} {r['text']} {f'({r['due_at']})' if r['due_at'] else ''}" for r in rems[:5]]
+        items = []
+        for r in rems[:5]:
+            status = "[Done]" if r.get("is_completed") else "[Pending]"
+            due_part = f" ({r['due_at']})" if r.get("due_at") else ""
+            items.append(f"- {status} {r['text']}{due_part}")
         return "Your reminders:\n" + "\n".join(items)
     elif action == "toggle" and reminder_id:
         res = ReminderRepository.toggle_completed(reminder_id)
