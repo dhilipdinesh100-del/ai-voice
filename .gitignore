@@ -4,6 +4,8 @@ __pycache__/
 *$py.class
 .pytest_cache/
 .coverage
+.coverage.*
+htmlcov/
 
 # Virtual Environment
 .venv/
@@ -12,12 +14,43 @@ ENV/
 
 # Environment Variables & Secrets
 .env
+.env.*
+!.env.example
 
 # Application local storage & databases
 data/
 *.db
 *.sqlite3
+*.sqlite
+
+# Generated media and user content
+*.wav
+*.mp3
+*.ogg
+*.webm
+uploads/
+audio/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+tmp/
+temp/
+
+# IDE and tool metadata
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Browser and Playwright artifacts
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
 
 # OS metadata
 .DS_Store
 Thumbs.db
+Desktop.ini
